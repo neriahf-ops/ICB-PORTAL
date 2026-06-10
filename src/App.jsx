@@ -15,13 +15,13 @@ const GLOBAL_STYLE = `
 `;
 
 const LINE_IMAGES = {
-  sfl: "/anatomy/sfl.png",
-  sbl: "/anatomy/sbl.png",
-  ll:  "/anatomy/ll.png",
-  spl: "/anatomy/spl.png",
-  dfl: "/anatomy/dfl.png",
-  fl:  "/anatomy/fl.png",
-  al:  "/anatomy/al.png",
+  sfl: "/anatomy/sfl.jpg",
+  sbl: "/anatomy/sbl.jpg",
+  ll:  "/anatomy/ll.jpg",
+  spl: "/anatomy/spl.jpg",
+  dfl: "/anatomy/dfl.jpg",
+  fl:  "/anatomy/fl.jpg",
+  al:  "/anatomy/al.jpg",
 };
 
 function PostureDiagram({ type }) {
@@ -302,7 +302,6 @@ function AnatomyTrainsPage() {
             <button onClick={() => setSelectedLine(null)} style={{background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"6px 14px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",marginBottom:"28px",borderRadius:"3px"}}>← All Lines</button>
             <div style={{fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",color:C.accent,marginBottom:"8px",fontWeight:"bold"}}>{selectedLine.abbr}</div>
             <h2 style={{...h2S,borderBottom:`3px solid ${C.accent}`,paddingBottom:"16px"}}>{selectedLine.name}</h2>
-
             <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",overflow:"hidden",marginBottom:"32px",display:"flex",gap:"0",alignItems:"stretch",flexWrap:"wrap"}}>
               <div style={{flex:"0 0 260px",minWidth:"200px"}}>
                 <img src={LINE_IMAGES[selectedLine.id]} alt={selectedLine.name} style={{width:"100%",height:"100%",minHeight:"300px",objectFit:"cover",objectPosition:"top",display:"block"}}/>
@@ -314,7 +313,6 @@ function AnatomyTrainsPage() {
                 <p style={{...tB,color:C.accent,fontStyle:"italic"}}>{selectedLine.path}</p>
               </div>
             </div>
-
             <div style={sB}><div style={lB}>What This Line Does</div><p style={tB}>{selectedLine.purpose}</p></div>
             <div style={sB}><div style={lB}>Signs This Line Is Dominant</div>{selectedLine.when_dominant.map((item,i) => <div key={i} style={{display:"flex",gap:"12px",marginBottom:"8px"}}><span style={{color:C.accent,flexShrink:0}}>—</span><p style={{fontSize:"16px",lineHeight:1.7,color:C.text,fontFamily:"Georgia,serif"}}>{item}</p></div>)}</div>
             <div style={sB}><div style={lB}>How to See It in Posture</div><p style={tB}>{selectedLine.posture_cues}</p></div>
@@ -465,7 +463,7 @@ function PortalView({onAdmin}) {
           <div style={{height:"2px",background:C.border,borderRadius:"1px"}}><div style={{height:"100%",width:`${Math.round(readPages.length/PAGES.length*100)}%`,background:C.accent,transition:"width 0.4s"}}/></div>
         </div>
         <nav style={{flex:1,overflowY:"auto",padding:"8px 0"}}>
-          {PAGES.map(page=>{const isActive=activePage.id===page.id;const isRead=readPages.includes(page.id);const accessible=canAccess(page);return <button key={page.id} onClick={()=>{if(accessible){setActivePage(page);markRead(page.id);}}} style={{width:"100%",display:"flex",alignItems:"center",gap:"10px",padding:"10px 20px",background:isActive?C.surfaceAlt:"transparent",border:"none",borderLeft:`2px solid ${isActive?C.accent:"transparent"}`,color:!accessible?"#ccc":isActive?C.text:C.muted,cursor:accessible?"pointer":"default",textAlign:"left",fontFamily:"Georgia,serif",transition:"all 0.1s"}}><span style={{fontSize:"12px",opacity:accessible?1:0.4,flexShrink:0,color:page.id==="anatomy-trains"?C.accent:C.accent}}>{page.icon}</span><span style={{fontSize:"13px",flex:1,lineHeight:1.3}}>{page.title}</span>{isRead&&<span style={{fontSize:"9px",color:C.success,flexShrink:0}}>✓</span>}{page.status==="queued"&&<span style={{fontSize:"8px",color:"#ccc",flexShrink:0}}>—</span>}</button>;})}
+          {PAGES.map(page=>{const isActive=activePage.id===page.id;const isRead=readPages.includes(page.id);const accessible=canAccess(page);return <button key={page.id} onClick={()=>{if(accessible){setActivePage(page);markRead(page.id);}}} style={{width:"100%",display:"flex",alignItems:"center",gap:"10px",padding:"10px 20px",background:isActive?C.surfaceAlt:"transparent",border:"none",borderLeft:`2px solid ${isActive?C.accent:"transparent"}`,color:!accessible?"#ccc":isActive?C.text:C.muted,cursor:accessible?"pointer":"default",textAlign:"left",fontFamily:"Georgia,serif",transition:"all 0.1s"}}><span style={{fontSize:"12px",opacity:accessible?1:0.4,flexShrink:0,color:C.accent}}>{page.icon}</span><span style={{fontSize:"13px",flex:1,lineHeight:1.3}}>{page.title}</span>{isRead&&<span style={{fontSize:"9px",color:C.success,flexShrink:0}}>✓</span>}{page.status==="queued"&&<span style={{fontSize:"8px",color:"#ccc",flexShrink:0}}>—</span>}</button>;})}
         </nav>
         <div style={{padding:"16px 20px",borderTop:`1px solid ${C.border}`,flexShrink:0}}>
           <button onClick={onAdmin} style={{width:"100%",background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px",fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Admin Dashboard →</button>
