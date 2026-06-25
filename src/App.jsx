@@ -24,132 +24,13 @@ const LINE_IMAGES = {
   al:  "/anatomy/al.jpg",
 };
 
-function PostureDiagram({ type }) {
-  const mkr = (id) => (<defs><marker id={id} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></marker></defs>);
-  const bf="#f5e8d5", bs="#c8a882", bw="1.2";
-  if (type==="sfl_sbl") return (
-    <svg width="100%" viewBox="0 0 320 460" style={{display:"block",maxWidth:"280px",margin:"0 auto"}}>
-      {mkr("a1")}
-      <line x1="120" y1="10" x2="120" y2="450" stroke="#999" strokeWidth="0.5" strokeDasharray="5 4" opacity="0.5"/>
-      <text x="120" y="8" textAnchor="middle" fontSize="9" fill="#999" fontFamily="Georgia,serif">plumb</text>
-      <ellipse cx="185" cy="52" rx="26" ry="31" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <rect x="174" y="81" width="14" height="14" rx="4" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M168 95 Q155 145 158 195 Q153 248 158 308" fill="none" stroke="#8a6e4e" strokeWidth="2.5" strokeLinecap="round"/>
-      <path d="M144 95 Q132 118 130 155 Q128 195 130 235 Q132 262 135 290 L183 290 Q186 262 188 235 Q190 195 188 155 Q186 118 174 95 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M133 290 Q133 314 138 328 Q150 342 160 344 Q170 342 182 328 Q187 314 187 290 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M137 328 Q134 365 133 398 Q132 418 135 432 L153 432 Q155 418 155 398 Q156 365 155 328 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M165 328 Q168 355 172 385 Q174 405 172 432 L190 432 Q190 405 188 385 Q186 355 185 328 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M185 83 Q180 130 175 175 Q170 228 168 290" fill="none" stroke="#4a90d9" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <path d="M153 83 Q148 138 150 190 Q152 245 153 300" fill="none" stroke="#e05c5c" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <line x1="162" y1="52" x2="115" y2="50" stroke="#4a90d9" strokeWidth="1.2" markerEnd="url(#a1)"/>
-      <text x="111" y="47" textAnchor="end" fontSize="10" fill="#4a90d9" fontFamily="Georgia,serif">Head forward</text>
-      <line x1="130" y1="168" x2="85" y2="155" stroke="#4a90d9" strokeWidth="1.2" markerEnd="url(#a1)"/>
-      <text x="81" y="152" textAnchor="end" fontSize="10" fill="#4a90d9" fontFamily="Georgia,serif">Chest collapsed</text>
-      <line x1="133" y1="305" x2="88" y2="295" stroke="#4a90d9" strokeWidth="1.2" markerEnd="url(#a1)"/>
-      <text x="84" y="292" textAnchor="end" fontSize="10" fill="#4a90d9" fontFamily="Georgia,serif">Pelvis forward</text>
-      <line x1="172" y1="380" x2="210" y2="372" stroke="#e05c5c" strokeWidth="1.2" markerEnd="url(#a1)"/>
-      <text x="214" y="376" fontSize="10" fill="#e05c5c" fontFamily="Georgia,serif">Knee locked</text>
-      <rect x="220" y="30" width="10" height="3" rx="1" fill="#4a90d9"/><text x="234" y="35" fontSize="9" fill="#4a90d9" fontFamily="Georgia,serif">SFL</text>
-      <rect x="220" y="44" width="10" height="3" rx="1" fill="#e05c5c"/><text x="234" y="49" fontSize="9" fill="#e05c5c" fontFamily="Georgia,serif">SBL</text>
-    </svg>
-  );
-  if (type==="ll_spl") return (
-    <svg width="100%" viewBox="0 0 320 460" style={{display:"block",maxWidth:"280px",margin:"0 auto"}}>
-      {mkr("a2")}
-      <ellipse cx="168" cy="50" rx="24" ry="30" fill={bf} stroke={bs} strokeWidth={bw} transform="rotate(-4,168,50)"/>
-      <rect x="157" y="78" width="14" height="14" rx="4" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M142 92 Q132 115 130 152 Q128 192 130 230 Q132 260 134 288 L184 288 Q186 260 188 230 Q190 192 188 152 Q186 115 176 92 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M132 288 Q132 312 137 326 Q149 340 160 342 Q171 340 183 326 Q188 312 188 288 Z" fill={bf} stroke={bs} strokeWidth={bw} transform="rotate(3,160,315)"/>
-      <path d="M136 326 Q132 364 131 396 Q130 416 133 430 L150 430 Q152 416 152 396 Q152 364 151 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M169 326 Q170 364 170 396 Q170 416 172 430 L190 430 Q192 416 192 396 Q192 364 191 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M172 430 L188 434 L198 440" stroke={bs} strokeWidth="7" strokeLinecap="round" fill="none"/>
-      <path d="M188 295 Q198 245 196 180 Q194 128 192 88" fill="none" stroke="#f5a623" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <path d="M140 290 Q148 245 158 195 Q168 148 178 92" fill="none" stroke="#7ed321" strokeWidth="4" strokeLinecap="round" opacity="0.75" strokeDasharray="8 4"/>
-      <line x1="132" y1="305" x2="90" y2="315" stroke="#f5a623" strokeWidth="1.2" markerEnd="url(#a2)"/>
-      <text x="86" y="319" textAnchor="end" fontSize="10" fill="#f5a623" fontFamily="Georgia,serif">Hip drops (left)</text>
-      <line x1="193" y1="437" x2="220" y2="444" stroke="#7ed321" strokeWidth="1.2" markerEnd="url(#a2)"/>
-      <text x="224" y="448" fontSize="10" fill="#7ed321" fontFamily="Georgia,serif">Foot flare</text>
-      <line x1="200" y1="128" x2="238" y2="115" stroke="#f5a623" strokeWidth="1.2" markerEnd="url(#a2)"/>
-      <text x="242" y="119" fontSize="10" fill="#f5a623" fontFamily="Georgia,serif">Hip higher R</text>
-      <rect x="10" y="30" width="10" height="3" rx="1" fill="#f5a623"/><text x="24" y="35" fontSize="9" fill="#f5a623" fontFamily="Georgia,serif">LL</text>
-      <rect x="10" y="44" width="10" height="3" rx="1" fill="#7ed321"/><text x="24" y="49" fontSize="9" fill="#7ed321" fontFamily="Georgia,serif">SPL</text>
-    </svg>
-  );
-  if (type==="sfl_al") return (
-    <svg width="100%" viewBox="0 0 320 460" style={{display:"block",maxWidth:"280px",margin:"0 auto"}}>
-      {mkr("a3")}
-      <ellipse cx="185" cy="50" rx="24" ry="30" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <rect x="174" y="78" width="14" height="14" rx="4" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M144 92 Q132 115 130 152 Q128 192 130 232 Q132 262 135 290 L183 290 Q186 262 188 232 Q190 192 188 152 Q186 115 174 92 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M130 108 Q105 135 96 168 Q90 196 90 224 L104 226 Q104 200 110 175 Q118 145 136 118 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M188 108 Q213 135 222 168 Q228 196 228 224 L214 226 Q214 200 208 175 Q200 145 184 118 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <circle cx="93" cy="228" r="8" fill="none" stroke="#9b59b6" strokeWidth="2"/>
-      <circle cx="225" cy="228" r="8" fill="none" stroke="#9b59b6" strokeWidth="2"/>
-      <path d="M135 290 Q134 314 138 326 Q150 340 160 342 Q170 340 182 326 Q186 314 185 290 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M138 326 Q135 364 134 395 Q133 415 136 430 L153 430 Q154 415 154 395 Q154 364 153 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M167 326 Q168 364 168 395 Q168 415 170 430 L188 430 Q190 415 190 395 Q190 364 189 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M183 80 Q178 130 172 175 Q166 228 162 285" fill="none" stroke="#4a90d9" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <path d="M130 108 Q112 142 102 175 Q94 202 93 222" fill="none" stroke="#9b59b6" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <path d="M190 108 Q208 142 218 175 Q226 202 225 222" fill="none" stroke="#9b59b6" strokeWidth="4" strokeLinecap="round" opacity="0.8"/>
-      <line x1="162" y1="50" x2="215" y2="36" stroke="#4a90d9" strokeWidth="1.2" markerEnd="url(#a3)"/>
-      <text x="219" y="40" fontSize="10" fill="#4a90d9" fontFamily="Georgia,serif">Head forward</text>
-      <line x1="130" y1="130" x2="80" y2="115" stroke="#9b59b6" strokeWidth="1.2" markerEnd="url(#a3)"/>
-      <text x="76" y="111" textAnchor="end" fontSize="10" fill="#9b59b6" fontFamily="Georgia,serif">Shoulders rolled</text>
-      <line x1="93" y1="238" x2="60" y2="245" stroke="#9b59b6" strokeWidth="1.2" markerEnd="url(#a3)"/>
-      <text x="56" y="249" textAnchor="end" fontSize="10" fill="#9b59b6" fontFamily="Georgia,serif">Palm faces back</text>
-      <rect x="220" y="30" width="10" height="3" rx="1" fill="#4a90d9"/><text x="234" y="35" fontSize="9" fill="#4a90d9" fontFamily="Georgia,serif">SFL</text>
-      <rect x="220" y="44" width="10" height="3" rx="1" fill="#9b59b6"/><text x="234" y="49" fontSize="9" fill="#9b59b6" fontFamily="Georgia,serif">AL</text>
-    </svg>
-  );
-  if (type==="dfl") return (
-    <svg width="100%" viewBox="0 0 320 460" style={{display:"block",maxWidth:"280px",margin:"0 auto"}}>
-      {mkr("a4")}
-      <ellipse cx="185" cy="50" rx="24" ry="30" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <rect x="174" y="78" width="14" height="14" rx="4" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M168 92 Q182 130 186 168 Q184 210 170 245 Q162 278 165 310" fill="none" stroke="#8a6e4e" strokeWidth="2.5" strokeLinecap="round"/>
-      <path d="M144 92 Q132 115 128 152 Q126 192 132 232 Q136 262 140 290 L180 290 Q184 262 190 232 Q196 192 196 152 Q194 115 176 92 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <ellipse cx="170" cy="245" rx="28" ry="22" fill="#fae8d0" stroke={bs} strokeWidth="1" opacity="0.8"/>
-      <path d="M138 290 Q138 312 142 326 Q153 340 163 342 Q173 340 185 326 Q190 312 188 290 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M140 326 Q138 364 137 395 Q136 415 140 430 L156 430 Q158 415 158 395 Q158 364 157 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M170 326 Q171 364 171 395 Q171 415 173 430 L191 430 Q193 415 192 395 Q192 364 191 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M163 315 Q164 265 164 215 Q163 165 162 118 Q162 102 164 90" fill="none" stroke="#e74c3c" strokeWidth="4" strokeLinecap="round" opacity="0.85" strokeDasharray="10 4"/>
-      <line x1="196" y1="165" x2="240" y2="148" stroke="#e74c3c" strokeWidth="1.2" markerEnd="url(#a4)"/>
-      <text x="244" y="152" fontSize="10" fill="#e74c3c" fontFamily="Georgia,serif">Hyperlordosis</text>
-      <line x1="196" y1="244" x2="238" y2="236" stroke="#e74c3c" strokeWidth="1.2" markerEnd="url(#a4)"/>
-      <text x="242" y="240" fontSize="10" fill="#e74c3c" fontFamily="Georgia,serif">Belly pushes out</text>
-      <line x1="140" y1="305" x2="92" y2="295" stroke="#e74c3c" strokeWidth="1.2" markerEnd="url(#a4)"/>
-      <text x="88" y="299" textAnchor="end" fontSize="10" fill="#e74c3c" fontFamily="Georgia,serif">Pelvis tips forward</text>
-      <line x1="186" y1="50" x2="228" y2="36" stroke="#888" strokeWidth="1.2" markerEnd="url(#a4)"/>
-      <text x="232" y="40" fontSize="10" fill="#888" fontFamily="Georgia,serif">Head forward</text>
-      <rect x="10" y="30" width="10" height="3" rx="1" fill="#e74c3c"/><text x="24" y="35" fontSize="9" fill="#e74c3c" fontFamily="Georgia,serif">DFL</text>
-    </svg>
-  );
-  if (type==="spl_fl") return (
-    <svg width="100%" viewBox="0 0 320 460" style={{display:"block",maxWidth:"280px",margin:"0 auto"}}>
-      {mkr("a5")}
-      <ellipse cx="168" cy="50" rx="24" ry="30" fill={bf} stroke={bs} strokeWidth={bw} transform="rotate(7,168,50)"/>
-      <rect x="157" y="78" width="14" height="14" rx="4" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M138 92 Q126 115 126 152 Q126 192 128 232 Q130 262 134 290 L182 290 Q186 262 188 232 Q192 192 192 152 Q192 115 180 92 Z" fill={bf} stroke={bs} strokeWidth={bw} transform="rotate(5,160,190)"/>
-      <path d="M126 108 Q102 135 92 168 Q86 196 86 224 L100 226 Q100 200 106 175 Q114 145 132 118 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M188 108 Q212 135 218 168 Q222 196 222 224 L210 226 Q210 200 204 175 Q198 145 186 118 Z" fill={bf} stroke={bs} strokeWidth={bw} opacity="0.7"/>
-      <path d="M132 288 Q132 312 136 326 Q148 340 160 342 Q172 340 183 326 Q188 312 186 288 Z" fill={bf} stroke={bs} strokeWidth={bw} transform="rotate(6,160,315)"/>
-      <path d="M134 326 Q131 364 130 396 Q129 416 132 430 L150 430 Q152 416 152 396 Q152 364 151 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M168 326 Q170 364 170 396 Q170 416 172 430 L190 430 Q192 416 192 396 Q192 364 191 326 Z" fill={bf} stroke={bs} strokeWidth={bw}/>
-      <path d="M132 430 L120 436 L110 442" stroke={bs} strokeWidth="7" strokeLinecap="round" fill="none"/>
-      <path d="M126 118 Q140 155 154 192 Q164 228 158 272 Q154 300 158 320" fill="none" stroke="#7ed321" strokeWidth="4" strokeLinecap="round" opacity="0.85"/>
-      <path d="M126 118 Q142 165 158 210 Q172 255 180 295" fill="none" stroke="#1abc9c" strokeWidth="3" strokeLinecap="round" opacity="0.7" strokeDasharray="8 4"/>
-      <line x1="120" y1="118" x2="82" y2="100" stroke="#7ed321" strokeWidth="1.2" markerEnd="url(#a5)"/>
-      <text x="78" y="96" textAnchor="end" fontSize="10" fill="#7ed321" fontFamily="Georgia,serif">L shoulder forward</text>
-      <line x1="116" y1="440" x2="80" y2="446" stroke="#7ed321" strokeWidth="1.2" markerEnd="url(#a5)"/>
-      <text x="76" y="450" textAnchor="end" fontSize="10" fill="#7ed321" fontFamily="Georgia,serif">L foot flare</text>
-      <line x1="188" y1="290" x2="230" y2="278" stroke="#1abc9c" strokeWidth="1.2" markerEnd="url(#a5)"/>
-      <text x="234" y="282" fontSize="10" fill="#1abc9c" fontFamily="Georgia,serif">Hip rotated</text>
-      <rect x="220" y="30" width="10" height="3" rx="1" fill="#7ed321"/><text x="234" y="35" fontSize="9" fill="#7ed321" fontFamily="Georgia,serif">SPL</text>
-      <rect x="220" y="44" width="10" height="3" rx="1" fill="#1abc9c"/><text x="234" y="49" fontSize="9" fill="#1abc9c" fontFamily="Georgia,serif">FL</text>
-    </svg>
-  );
-  return null;
-}
+const SCENARIO_IMAGES = {
+  s1: "/anatomy/margaret.png",
+  s2: "/anatomy/robert.png",
+  s3: "/anatomy/diane.png",
+  s4: "/anatomy/james.png",
+  s5: "/anatomy/anthony.png",
+};
 
 const LINES = [
   { id:"sfl", name:"Superficial Front Line", abbr:"SFL", color:"#b8976a", path:"Tops of feet → shins → quadriceps → abdominals → chest → neck → back of skull", purpose:"The SFL controls the front of the body. It is the body's forward-pull system — resisting falling backward and powering all flexion movements.", simple:"This is the line running up the entire front from toes to skull. When overworked, everything on the front tightens and pulls forward: the head, the chest, the hips.", when_dominant:["Forward head — head pushed ahead of the shoulders","Rounded, collapsed chest","Tight hip flexors — front of the hips always feel short","Overuse of the quads when squatting or walking","Rib flare — ribs pushed forward and out","Chronic neck and upper shoulder tension"], posture_cues:"Side view: head forward of the ear, chest caved in, pelvis tilted forward, knees pushed back (hyperextended).", gait_cues:"Foot strikes far ahead of the body, quads visibly working hard, limited hip extension — back leg does not fully straighten.", programming:"Do not reinforce forward flexion or quad-dominant movements. Prioritize thoracic extension, hip flexor lengthening, and posterior chain activation.", avoid:"Crunches, sit-ups, leg press, quad-dominant squats without postural correction first." },
@@ -162,11 +43,11 @@ const LINES = [
 ];
 
 const SCENARIOS = [
-  { id:"s1", name:"Margaret, 58", complaint:"Chronic low back pain, always feels stiff in the morning, cannot touch her toes", posture_findings:["Head forward of the shoulders by 2+ inches","Chest collapsed and rounded","Excessive lower back arch (hyperlordosis)","Pelvis tilted forward (anterior tilt)","Knees hyperextended","Hamstrings always feel tight despite regular stretching"], gait_findings:["Short, stiff stride length","Minimal hip extension — back leg barely goes behind the body","Upper back barely rotates","Glutes visually not engaging during push-off"], dominant_lines:["Superficial Front Line (SFL) — dominant and pulling everything forward","Superficial Back Line (SBL) — overworking as a compensation"], why:"The SFL is pulling everything forward — forward head, collapsed chest, anterior pelvic tilt. The SBL is overworking to hold her upright against this constant forward pull, which is why the hamstrings are chronically tight and the lower back is compressed. Stretching the hamstrings increases SBL tone — it does not fix the problem.", programming_priorities:["MFR: thoracic spine, hip flexors, calves — in that order","Mobility: thoracic extension, hip flexor lengthening through movement","Strength: posterior chain — glutes and hamstrings in hip extension, upper back retraction"], avoid_list:["Aggressive hamstring stretching — will increase SBL tone and worsen the pattern","Crunches or sit-ups — directly reinforces SFL dominance","Heavy squats or deadlifts before alignment is established"], svg_type:"sfl_sbl" },
-  { id:"s2", name:"Robert, 63", complaint:"Right knee pain, right IT band tightness, feels unstable going down stairs", posture_findings:["Right hip visibly higher than left","Trunk leaning slightly to the right","Right foot turned out more than left","Left shoulder lower than right"], gait_findings:["Left hip drops noticeably with every step onto the right foot — Trendelenburg sign","Right foot flares outward","Reduced left arm swing","Body shifts right with each step"], dominant_lines:["Lateral Line (LL) — underperforming on the RIGHT side","Spiral Line (SPL) — asymmetrical, contributing to foot flare and rotation"], why:"Robert's right Lateral Line is not stabilizing during single-leg stance. Every time he steps onto his right foot, his left hip drops — the Trendelenburg sign tells us directly that the right LL is not doing its job. The foot flare and hip rotation also indicate a Spiral Line imbalance on the right. The IT band tightness is the LL's response to being overloaded.", programming_priorities:["MFR: right IT band, right TFL, right peroneals — reduce tone before loading","Mobility: hip internal rotation, ankle mobility right side","Strength: right-side single-leg stability — step-ups, single-leg deadlifts, lateral band walks"], avoid_list:["Bilateral squats and lunges before single-leg stability is confirmed","Heavy lateral loading without core control","Ignoring the foot flare — it will continue driving the knee pain"], svg_type:"ll_spl" },
-  { id:"s3", name:"Diane, 52", complaint:"Shoulder pain right side, chronic neck tension both sides, cannot reach overhead without pain", posture_findings:["Both shoulders rolled forward and internally rotated","Palms face backward when arms hang at rest","Head forward of the shoulders","Right shoulder more elevated than left","Upper back (thoracic spine) very rounded"], gait_findings:["Both arms held close to the body — minimal swing","Right arm crosses the midline with each step","Upper body stiff — not rotating freely"], dominant_lines:["Superficial Front Line (SFL) — collapsing the chest and pulling shoulders forward","Arm Lines (AL) — overworking in both arms, more severe on the right"], why:"The SFL dominance is collapsing the chest and pulling the shoulders into internal rotation. The Arm Lines are overworking to maintain arm function in this compromised position, which drives chronic neck and shoulder tension.", programming_priorities:["MFR: chest, anterior shoulder, suboccipitals (base of skull)","Mobility: thoracic extension, shoulder external rotation — wall slides, sleeper stretch","Strength: scapular retraction and depression, face pulls, band pull-aparts"], avoid_list:["Any pressing before scapular stability is restored","Overhead work before thoracic extension is meaningfully improved","Internal rotation-dominant exercises"], svg_type:"sfl_al" },
-  { id:"s4", name:"James, 67", complaint:"Low back fatigue within 15 minutes of any exercise, poor balance, has fallen twice in the past year", posture_findings:["Excessive lumbar lordosis — exaggerated lower back arch","Rib flare visible from the side","Belly pushing forward significantly","Cannot find neutral spine even when verbally cued for 2 minutes","Forward head"], gait_findings:["Excessive trunk sway from side to side","Lower back visibly working hard to maintain upright position","Cannot complete single-leg balance for more than 2 seconds","Steps are short and cautious — fear of falling"], dominant_lines:["Deep Front Line (DFL) — severely underperforming"], why:"James's DFL is not functioning as an internal stabilizer. The exaggerated arch, rib flare, belly protrusion, and trunk sway all indicate that the deep core system is not regulating internal pressure. His lower back muscles are compensating — doing the DFL's job — which is why they fatigue in 15 minutes.", programming_priorities:["MFR: inner thighs, hip flexors, thoracic spine","Breathing mechanics first — can he exhale fully without his spine position collapsing?","Strength: dead bugs, heel slides, bird dogs, supported balance — nothing standing unsupported until DFL is active"], avoid_list:["Heavy loading of any kind before DFL is functioning","Breath-holding during exercise — defeats DFL activation","High-rep fatiguing work — collapses the internal pressure system further","Standing balance challenges without support before baseline is established"], svg_type:"dfl" },
-  { id:"s5", name:"Sandra, 55", complaint:"Left hip pain when walking, feels like she always leads with her right side, difficulty with sport", posture_findings:["Left foot significantly more turned out than right","Left hip rotated forward compared to right","Left shoulder driven forward at rest","Asymmetrical rib position — left side more flared forward"], gait_findings:["Left arm crosses the midline aggressively with each step","Right arm barely swings","Left foot flares significantly more than right","Body appears to twist left with each step","Poor force transfer from lower to upper body on the right side"], dominant_lines:["Spiral Line (SPL) — left side dominant, creating whole-body rotation","Functional Lines (FL) — asymmetrical, left side driving, right side passive"], why:"Sandra has a dominant left Spiral Line creating a whole-body rotation pattern she cannot consciously override. The foot flare, hip rotation, shoulder rotation, and arm crossing the midline are all connected through the same fascial pathway. The Functional Lines are asymmetrical — her left side drives every movement and her right side barely participates.", programming_priorities:["MFR: left IT band, left TFL, left thoracic rotators","Mobility: left hip internal rotation, right thoracic rotation","Strength: contralateral patterns — right arm left leg; rotational chops and lifts; anti-rotation core work"], avoid_list:["Purely symmetrical bilateral training — reinforces the rotational pattern","Heavy loading before the rotation is addressed","Sport-specific training before the pattern is corrected"], svg_type:"spl_fl" },
+  { id:"s1", name:"Margaret, 58", complaint:"Chronic low back pain, always feels stiff in the morning, cannot touch her toes", posture_findings:["Head forward of the shoulders by 2+ inches","Chest collapsed and rounded","Excessive lower back arch (hyperlordosis)","Pelvis tilted forward (anterior tilt)","Knees hyperextended","Hamstrings always feel tight despite regular stretching"], gait_findings:["Short, stiff stride length","Minimal hip extension — back leg barely goes behind the body","Upper back barely rotates","Glutes visually not engaging during push-off"], dominant_lines:["Superficial Front Line (SFL) — dominant and pulling everything forward","Superficial Back Line (SBL) — overworking as a compensation"], why:"The SFL is pulling everything forward — forward head, collapsed chest, anterior pelvic tilt. The SBL is overworking to hold her upright against this constant forward pull, which is why the hamstrings are chronically tight and the lower back is compressed. Stretching the hamstrings increases SBL tone — it does not fix the problem.", programming_priorities:["MFR: thoracic spine, hip flexors, calves — in that order","Mobility: thoracic extension, hip flexor lengthening through movement","Strength: posterior chain — glutes and hamstrings in hip extension, upper back retraction"], avoid_list:["Aggressive hamstring stretching — will increase SBL tone and worsen the pattern","Crunches or sit-ups — directly reinforces SFL dominance","Heavy squats or deadlifts before alignment is established"] },
+  { id:"s2", name:"Robert, 63", complaint:"Right knee pain, right IT band tightness, feels unstable going down stairs", posture_findings:["Right hip visibly higher than left","Trunk leaning slightly to the right","Right foot turned out more than left","Left shoulder lower than right"], gait_findings:["Left hip drops noticeably with every step onto the right foot — Trendelenburg sign","Right foot flares outward","Reduced left arm swing","Body shifts right with each step"], dominant_lines:["Lateral Line (LL) — underperforming on the RIGHT side","Spiral Line (SPL) — asymmetrical, contributing to foot flare and rotation"], why:"Robert's right Lateral Line is not stabilizing during single-leg stance. Every time he steps onto his right foot, his left hip drops — the Trendelenburg sign tells us directly that the right LL is not doing its job. The foot flare and hip rotation also indicate a Spiral Line imbalance on the right. The IT band tightness is the LL's response to being overloaded.", programming_priorities:["MFR: right IT band, right TFL, right peroneals — reduce tone before loading","Mobility: hip internal rotation, ankle mobility right side","Strength: right-side single-leg stability — step-ups, single-leg deadlifts, lateral band walks"], avoid_list:["Bilateral squats and lunges before single-leg stability is confirmed","Heavy lateral loading without core control","Ignoring the foot flare — it will continue driving the knee pain"] },
+  { id:"s3", name:"Diane, 52", complaint:"Shoulder pain right side, chronic neck tension both sides, cannot reach overhead without pain", posture_findings:["Both shoulders rolled forward and internally rotated","Palms face backward when arms hang at rest","Head forward of the shoulders","Right shoulder more elevated than left","Upper back (thoracic spine) very rounded"], gait_findings:["Both arms held close to the body — minimal swing","Right arm crosses the midline with each step","Upper body stiff — not rotating freely"], dominant_lines:["Superficial Front Line (SFL) — collapsing the chest and pulling shoulders forward","Arm Lines (AL) — overworking in both arms, more severe on the right"], why:"The SFL dominance is collapsing the chest and pulling the shoulders into internal rotation. The Arm Lines are overworking to maintain arm function in this compromised position, which drives chronic neck and shoulder tension.", programming_priorities:["MFR: chest, anterior shoulder, suboccipitals (base of skull)","Mobility: thoracic extension, shoulder external rotation — wall slides, sleeper stretch","Strength: scapular retraction and depression, face pulls, band pull-aparts"], avoid_list:["Any pressing before scapular stability is restored","Overhead work before thoracic extension is meaningfully improved","Internal rotation-dominant exercises"] },
+  { id:"s4", name:"James, 67", complaint:"Low back fatigue within 15 minutes of any exercise, poor balance, has fallen twice in the past year", posture_findings:["Excessive lumbar lordosis — exaggerated lower back arch","Rib flare visible from the side","Belly pushing forward significantly","Cannot find neutral spine even when verbally cued for 2 minutes","Forward head"], gait_findings:["Excessive trunk sway from side to side","Lower back visibly working hard to maintain upright position","Cannot complete single-leg balance for more than 2 seconds","Steps are short and cautious — fear of falling"], dominant_lines:["Deep Front Line (DFL) — severely underperforming"], why:"James's DFL is not functioning as an internal stabilizer. The exaggerated arch, rib flare, belly protrusion, and trunk sway all indicate that the deep core system is not regulating internal pressure. His lower back muscles are compensating — doing the DFL's job — which is why they fatigue in 15 minutes.", programming_priorities:["MFR: inner thighs, hip flexors, thoracic spine","Breathing mechanics first — can he exhale fully without his spine position collapsing?","Strength: dead bugs, heel slides, bird dogs, supported balance — nothing standing unsupported until DFL is active"], avoid_list:["Heavy loading of any kind before DFL is functioning","Breath-holding during exercise — defeats DFL activation","High-rep fatiguing work — collapses the internal pressure system further","Standing balance challenges without support before baseline is established"] },
+  { id:"s5", name:"Anthony, 55", complaint:"Left hip pain when walking, feels like he always leads with his right side, difficulty with sport", posture_findings:["Left foot significantly more turned out than right","Left hip rotated forward compared to right","Left shoulder driven forward at rest","Asymmetrical rib position — left side more flared forward"], gait_findings:["Left arm crosses the midline aggressively with each step","Right arm barely swings","Left foot flares significantly more than right","Body appears to twist left with each step","Poor force transfer from lower to upper body on the right side"], dominant_lines:["Spiral Line (SPL) — left side dominant, creating whole-body rotation","Functional Lines (FL) — asymmetrical, left side driving, right side passive"], why:"Anthony has a dominant left Spiral Line creating a whole-body rotation pattern he cannot consciously override. The foot flare, hip rotation, shoulder rotation, and arm crossing the midline are all connected through the same fascial pathway. The Functional Lines are asymmetrical — his left side drives every movement and his right side barely participates.", programming_priorities:["MFR: left IT band, left TFL, left thoracic rotators","Mobility: left hip internal rotation, right thoracic rotation","Strength: contralateral patterns — right arm left leg; rotational chops and lifts; anti-rotation core work"], avoid_list:["Purely symmetrical bilateral training — reinforces the rotational pattern","Heavy loading before the rotation is addressed","Sport-specific training before the pattern is corrected"] },
 ];
 
 const QUIZ_QUESTIONS = [
@@ -294,7 +175,7 @@ function AnatomyTrainsPage() {
             <h2 style={h2S}>The Anatomy Trains Framework</h2>
             <p style={bB}>At ICB, every assessment, every program, and every coaching decision is rooted in one framework: Anatomy Trains. This module teaches you everything you need to apply it — without ever reading the book. Work through each section in order. The quiz requires 20 out of 25 to pass.</p>
             <div style={sB}><div style={lB}>The Core Idea</div><p style={tB}>The body is not a collection of separate muscles. It is a continuous network of connected tissue — fascia — that transmits force, holds posture, and shapes how every person moves. Anatomy Trains maps the specific pathways of this network. There are 7 primary lines. Understanding them tells you why a client moves the way they do — not just what is tight or weak.</p></div>
-            <div style={sB}><div style={lB}>How to Use This Module</div><p style={tB}>Tensegrity first, then the 7 Lines (each with an ICB-branded anatomy illustration), then Posture and Gait reading, then Client Scenarios with visual posture dysfunctions and full coaching analysis, then the 25-question Quiz.</p></div>
+            <div style={sB}><div style={lB}>How to Use This Module</div><p style={tB}>Tensegrity first, then the 7 Lines (each with an ICB-branded anatomy illustration), then Posture and Gait reading, then Client Scenarios with full assessment photos and coaching analysis, then the 25-question Quiz.</p></div>
             {NB("Start with Tensegrity →","tensegrity")}
           </>}
           {section==="tensegrity" && <>
@@ -360,19 +241,30 @@ function AnatomyTrainsPage() {
           {section==="scenarios" && !selectedScenario && <>
             <div style={{fontSize:"9px",letterSpacing:"4px",textTransform:"uppercase",color:C.accent,marginBottom:"12px"}}>Real Cases</div>
             <h2 style={h2S}>Client Scenarios</h2>
-            <p style={{...bB,marginBottom:"28px"}}>Five real client profiles with postural and gait findings, visual posture diagrams with dominant lines highlighted, and the full coaching analysis. Try to identify the dominant lines before reading the analysis.</p>
+            <p style={{...bB,marginBottom:"28px"}}>Five client profiles with full postural and gait assessment photos, findings, and complete coaching analysis. Study the photo first — try to identify the dominant lines before reading the analysis.</p>
             <div style={{display:"grid",gap:"16px"}}>
-              {SCENARIOS.map(s => <button key={s.id} onClick={() => setSelectedScenario(s)} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",padding:"20px",textAlign:"left",cursor:"pointer"}}><div style={{fontSize:"16px",fontWeight:"bold",color:C.text,marginBottom:"6px",fontFamily:"Georgia,serif"}}>{s.name}</div><div style={{fontSize:"13px",color:C.muted,lineHeight:1.6}}>{s.complaint}</div></button>)}
+              {SCENARIOS.map(s => (
+                <button key={s.id} onClick={() => setSelectedScenario(s)} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",padding:"0",textAlign:"left",cursor:"pointer",overflow:"hidden",display:"flex",alignItems:"stretch"}}>
+                  <img src={SCENARIO_IMAGES[s.id]} alt={s.name} style={{width:"120px",minHeight:"100px",objectFit:"cover",objectPosition:"top",flexShrink:0}}/>
+                  <div style={{padding:"16px 20px",flex:1}}>
+                    <div style={{fontSize:"16px",fontWeight:"bold",color:C.text,marginBottom:"6px",fontFamily:"Georgia,serif"}}>{s.name}</div>
+                    <div style={{fontSize:"13px",color:C.muted,lineHeight:1.6}}>{s.complaint}</div>
+                    <div style={{marginTop:"10px",display:"flex",gap:"6px",flexWrap:"wrap"}}>
+                      {s.dominant_lines.map((l,i) => <span key={i} style={{fontSize:"10px",letterSpacing:"1px",background:"#fdf6ee",color:C.accent,border:`1px solid #e8d5b7`,padding:"2px 8px",borderRadius:"2px"}}>{l.split(" — ")[0]}</span>)}
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
           </>}
           {section==="scenarios" && selectedScenario && <>
             <button onClick={() => setSelectedScenario(null)} style={{background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"6px 14px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",marginBottom:"28px",borderRadius:"3px"}}>← All Scenarios</button>
             <div style={{fontSize:"9px",letterSpacing:"4px",textTransform:"uppercase",color:C.accent,marginBottom:"12px"}}>Client Profile</div>
             <h2 style={{...h2S,marginBottom:"8px"}}>{selectedScenario.name}</h2>
-            <div style={{fontSize:"15px",color:C.muted,marginBottom:"32px",fontStyle:"italic",fontFamily:"Georgia,serif"}}>Chief complaint: {selectedScenario.complaint}</div>
-            <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",padding:"24px",marginBottom:"28px"}}>
-              <div style={{...lB,marginBottom:"20px"}}>Visual Postural Assessment — Dominant Lines Highlighted</div>
-              <PostureDiagram type={selectedScenario.svg_type}/>
+            <div style={{fontSize:"15px",color:C.muted,marginBottom:"28px",fontStyle:"italic",fontFamily:"Georgia,serif"}}>Chief complaint: {selectedScenario.complaint}</div>
+            <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",overflow:"hidden",marginBottom:"32px"}}>
+              <div style={{padding:"16px 20px",borderBottom:`1px solid ${C.border}`}}><div style={{...lB,marginBottom:"0"}}>Postural & Gait Assessment</div></div>
+              <img src={SCENARIO_IMAGES[selectedScenario.id]} alt={selectedScenario.name} style={{width:"100%",display:"block",maxHeight:"600px",objectFit:"contain",background:"#f8f6f3"}}/>
             </div>
             <div style={sB}><div style={lB}>Postural Assessment Findings</div>{selectedScenario.posture_findings.map((f,i) => <div key={i} style={{display:"flex",gap:"12px",marginBottom:"8px"}}><span style={{color:C.accent,flexShrink:0}}>—</span><p style={{fontSize:"16px",lineHeight:1.7,color:C.text,fontFamily:"Georgia,serif"}}>{f}</p></div>)}</div>
             <div style={sB}><div style={lB}>Gait Assessment Findings</div>{selectedScenario.gait_findings.map((f,i) => <div key={i} style={{display:"flex",gap:"12px",marginBottom:"8px"}}><span style={{color:C.accent,flexShrink:0}}>—</span><p style={{fontSize:"16px",lineHeight:1.7,color:C.text,fontFamily:"Georgia,serif"}}>{f}</p></div>)}</div>
