@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+// The URL and key come from Vercel → Settings → Environment Variables.
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_KEY;
+const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 const C = {
   bg: "#f2f0ed", surface: "#ffffff", surfaceAlt: "#ece9e4",
@@ -788,52 +795,82 @@ const statusBadge = (status) => {
 
 // ── ADMIN VIEW ────────────────────────────────────────────────────────────────
 
-const PRACTITIONERS = [
-  {id:1,name:"Marcus Webb",type:"Internal",joined:"May 28",progress:100,pagesRead:4},
-  {id:2,name:"Aisha Collins",type:"External",joined:"May 29",progress:36,pagesRead:2},
-  {id:3,name:"Derek Huang",type:"Internal",joined:"May 30",progress:18,pagesRead:1},
-  {id:4,name:"Simone Okafor",type:"External",joined:"May 31",progress:0,pagesRead:0},
-];
+const fmtDate = (d) => d ? new Date(d).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}) : "—";
 
 function AdminView({onBack}) {
-  const [practitioners,setPractitioners] = useState(PRACTITIONERS);
-  const [showAdd,setShowAdd] = useState(false);
-  const [newName,setNewName] = useState("");
-  const [newType,setNewType] = useState("Internal");
+  const [staff,setStaff] = useState([]);
+  const [loading,setLoading] = useState(true);
+  const [error,setError] = useState("");
   const [selected,setSelected] = useState(null);
-  const completedPages = PAGES.filter(p=>p.status==="complete").length;
-  const add = () => {if(!newName.trim())return;setPractitioners([...practitioners,{id:Date.now(),name:newName.trim(),type:newType,joined:"Today",progress:0,pagesRead:0}]);setNewName("");setShowAdd(false);};
-  const stats=[{label:"Total",val:practitioners.length,color:C.text},{label:"Completed",val:practitioners.filter(p=>p.progress===100).length,color:C.success},{label:"In Progress",val:practitioners.filter(p=>p.progress>0&&p.progress<100).length,color:C.accent},{label:"Not Started",val:practitioners.filter(p=>p.progress===0).length,color:C.muted}];
+  const trainingPages = PAGES.filter(p=>p.status==="complete");
+  const completedPages = trainingPages.length;
+
+  useEffect(()=>{
+    (async()=>{
+      const [{data:profiles,error:e1},{data:progress,error:e2}] = await Promise.all([
+        supabase.from("profiles").select("id,email,full_name,role,created_at").order("created_at"),
+        supabase.from("page_progress").select("user_id,page_id,read_at"),
+      ]);
+      if(e1||e2){setError("Couldn't load staff progress. Refresh the page to try again.");setLoading(false);return;}
+      const ids = new Set(trainingPages.map(p=>p.id));
+      setStaff((profiles||[]).map(p=>{
+        const reads=(progress||[]).filter(r=>r.user_id===p.id&&ids.has(r.page_id));
+        const pagesRead=reads.length;
+        const last=reads.reduce((m,r)=>!m||r.read_at>m?r.read_at:m,null);
+        return {...p,reads,pagesRead,lastActive:last,progress:completedPages?Math.round(pagesRead/completedPages*100):0};
+      }));
+      setLoading(false);
+    })();
+  },[]);
+
+  const stats=[{label:"Total",val:staff.length,color:C.text},{label:"Completed",val:staff.filter(p=>p.progress===100).length,color:C.success},{label:"In Progress",val:staff.filter(p=>p.progress>0&&p.progress<100).length,color:C.accent},{label:"Not Started",val:staff.filter(p=>p.progress===0).length,color:C.muted}];
   return (
     <div style={{padding:"32px",maxWidth:"900px",margin:"0 auto"}}>
       <div style={{display:"flex",alignItems:"center",gap:"16px",marginBottom:"32px"}}>
         <button onClick={onBack} style={{background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"6px 14px",fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif"}}>← Back</button>
-        <div><div style={{fontSize:"10px",letterSpacing:"3px",color:C.accent,textTransform:"uppercase",marginBottom:"4px"}}>Admin</div><div style={{fontSize:"22px",fontWeight:"bold",color:C.text}}>Practitioner Dashboard</div></div>
+        <div><div style={{fontSize:"10px",letterSpacing:"3px",color:C.accent,textTransform:"uppercase",marginBottom:"4px"}}>Admin</div><div style={{fontSize:"22px",fontWeight:"bold",color:C.text}}>Staff Training Dashboard</div></div>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"28px"}}>
-        {stats.map(s=><div key={s.label} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",padding:"16px"}}><div style={{fontSize:"9px",letterSpacing:"2px",color:C.muted,textTransform:"uppercase",marginBottom:"8px"}}>{s.label}</div><div style={{fontSize:"30px",fontWeight:"bold",color:s.color}}>{s.val}</div></div>)}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:"12px",marginBottom:"28px"}}>
+        {stats.map(s=><div key={s.label} style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",padding:"16px"}}><div style={{fontSize:"9px",letterSpacing:"2px",color:C.muted,textTransform:"uppercase",marginBottom:"8px"}}>{s.label}</div><div style={{fontSize:"30px",fontWeight:"bold",color:s.color}}>{loading?"–":s.val}</div></div>)}
       </div>
       <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px",marginBottom:"28px"}}>
+        <div style={{padding:"16px 20px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}><div style={{fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",color:C.accent}}>Staff</div><div style={{fontSize:"11px",color:C.muted}}>To add someone: Supabase → Authentication → Users → Add user</div></div>
+        {loading&&<div style={{padding:"20px",fontSize:"13px",color:C.muted}}>Loading…</div>}
+        {error&&<div style={{padding:"20px",fontSize:"13px",color:C.danger}}>{error}</div>}
+        {!loading&&!error&&staff.length===0&&<div style={{padding:"20px",fontSize:"13px",color:C.muted}}>No staff accounts yet.</div>}
+        {staff.map(p=><div key={p.id} style={{display:"grid",gridTemplateColumns:"2fr 90px 110px 60px",gap:"8px",padding:"12px 20px",borderBottom:`1px solid ${C.border}`,alignItems:"center",fontSize:"13px"}}><div style={{minWidth:0}}><div style={{fontWeight:"bold",color:C.text}}>{p.full_name||p.email}{p.role==="admin"&&<span style={{fontSize:"9px",color:C.accent,letterSpacing:"1px",marginLeft:"8px"}}>ADMIN</span>}</div><div style={{fontSize:"11px",color:C.muted,overflow:"hidden",textOverflow:"ellipsis"}}>{p.email} · Last active {fmtDate(p.lastActive)}</div></div><div style={{color:C.text}}>{p.pagesRead}/{completedPages}</div><div><div style={{fontSize:"11px",marginBottom:"3px",color:C.text}}>{p.progress}%</div><div style={{height:"2px",background:C.border}}><div style={{height:"100%",width:`${p.progress}%`,background:p.progress===100?C.success:C.accent}}/></div></div><button onClick={()=>setSelected(p)} style={{background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"4px 10px",fontSize:"10px",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>View</button></div>)}
+      </div>
+      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px"}}>
         <div style={{padding:"16px 20px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div style={{fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",color:C.accent}}>Portal Build Status</div><div style={{fontSize:"11px",color:C.muted}}>{completedPages}/{PAGES.length} complete</div></div>
         {PAGES.map(p=><div key={p.id} style={{display:"grid",gridTemplateColumns:"1fr 80px",padding:"12px 20px",borderBottom:`1px solid ${C.border}`,alignItems:"center"}}><span style={{fontSize:"13px",color:p.status==="queued"?C.muted:C.text}}>{p.title}</span><div style={{textAlign:"right"}}>{statusBadge(p.status)}</div></div>)}
       </div>
-      <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"4px"}}>
-        <div style={{padding:"16px 20px",borderBottom:`1px solid ${C.border}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}><div style={{fontSize:"10px",letterSpacing:"3px",textTransform:"uppercase",color:C.accent}}>Practitioners</div><button onClick={()=>setShowAdd(true)} style={{background:C.accent,color:"#fff",border:"none",padding:"7px 16px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",fontWeight:"bold",borderRadius:"3px"}}>+ Add</button></div>
-        {practitioners.map(p=><div key={p.id} style={{display:"grid",gridTemplateColumns:"2fr 80px 90px 110px 60px",padding:"12px 20px",borderBottom:`1px solid ${C.border}`,alignItems:"center",fontSize:"13px"}}><div><div style={{fontWeight:"bold",color:C.text}}>{p.name}</div><div style={{fontSize:"11px",color:C.muted}}>Joined {p.joined}</div></div><div style={{color:C.muted,fontSize:"11px"}}>{p.type}</div><div style={{color:C.text}}>{p.pagesRead}/{PAGES.length}</div><div><div style={{fontSize:"11px",marginBottom:"3px",color:C.text}}>{p.progress}%</div><div style={{height:"2px",background:C.border}}><div style={{height:"100%",width:`${p.progress}%`,background:p.progress===100?C.success:C.accent}}/></div></div><button onClick={()=>setSelected(p)} style={{background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"4px 10px",fontSize:"10px",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>View</button></div>)}
-      </div>
-      {showAdd&&<div style={{position:"fixed",inset:0,background:"rgba(61,61,61,0.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={()=>setShowAdd(false)}><div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"6px",padding:"28px",width:"360px"}} onClick={e=>e.stopPropagation()}><div style={{fontSize:"18px",fontWeight:"bold",marginBottom:"20px",color:C.text}}>Add Practitioner</div><input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="Full name" style={{width:"100%",background:C.bg,border:`1px solid ${C.border}`,color:C.text,padding:"10px 12px",fontSize:"13px",fontFamily:"Georgia,serif",borderRadius:"3px",outline:"none",marginBottom:"16px"}}/><div style={{display:"flex",gap:"8px",marginBottom:"20px"}}>{["Internal","External"].map(t=><button key={t} onClick={()=>setNewType(t)} style={{padding:"7px 16px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",background:newType===t?C.accent:"transparent",color:newType===t?"#fff":C.muted,border:`1px solid ${newType===t?C.accent:C.border}`,cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>{t}</button>)}</div><div style={{display:"flex",gap:"10px"}}><button onClick={add} style={{flex:1,background:C.accent,color:"#fff",border:"none",padding:"10px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",fontWeight:"bold",borderRadius:"3px"}}>Add</button><button onClick={()=>setShowAdd(false)} style={{padding:"10px 16px",background:"none",border:`1px solid ${C.border}`,color:C.muted,fontSize:"10px",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Cancel</button></div></div></div>}
-      {selected&&<div style={{position:"fixed",inset:0,background:"rgba(61,61,61,0.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000}} onClick={()=>setSelected(null)}><div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"6px",padding:"28px",width:"440px",maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}><div style={{fontSize:"20px",fontWeight:"bold",marginBottom:"4px",color:C.text}}>{selected.name}</div><div style={{fontSize:"12px",color:C.muted,marginBottom:"20px"}}>{selected.type} · Joined {selected.joined}</div>{PAGES.map((page,i)=>{const done=i<selected.pagesRead;return <div key={page.id} style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px 0",borderBottom:`1px solid ${C.border}`}}><div style={{width:"22px",height:"22px",border:`1px solid ${done?C.success:C.border}`,background:done?"#eaf2ec":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",color:done?C.success:C.muted,flexShrink:0,borderRadius:"3px"}}>{done?"✓":i+1}</div><div style={{flex:1,fontSize:"12px",color:done?C.text:C.muted}}>{page.title}</div>{statusBadge(page.status)}</div>;})} <button onClick={()=>setSelected(null)} style={{marginTop:"20px",background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px 16px",fontSize:"10px",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Close</button></div></div>}
+      {selected&&<div style={{position:"fixed",inset:0,background:"rgba(61,61,61,0.6)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000,padding:"16px"}} onClick={()=>setSelected(null)}><div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:"6px",padding:"28px",width:"440px",maxWidth:"100%",maxHeight:"80vh",overflowY:"auto"}} onClick={e=>e.stopPropagation()}>
+        <div style={{fontSize:"20px",fontWeight:"bold",marginBottom:"4px",color:C.text}}>{selected.full_name||selected.email}</div>
+        <div style={{fontSize:"12px",color:C.muted,marginBottom:"20px"}}>{selected.email} · Account created {fmtDate(selected.created_at)}</div>
+        {trainingPages.map(page=>{const r=selected.reads.find(x=>x.page_id===page.id);const done=!!r;return <div key={page.id} style={{display:"flex",alignItems:"center",gap:"12px",padding:"10px 0",borderBottom:`1px solid ${C.border}`}}><div style={{width:"22px",height:"22px",border:`1px solid ${done?C.success:C.border}`,background:done?"#eaf2ec":"transparent",borderRadius:"3px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"11px",color:C.success,flexShrink:0}}>{done?"✓":""}</div><div style={{flex:1,fontSize:"13px",color:done?C.text:C.muted}}>{page.title}</div><div style={{fontSize:"11px",color:C.muted}}>{done?fmtDate(r.read_at):""}</div></div>;})}
+        <button onClick={()=>setSelected(null)} style={{marginTop:"20px",width:"100%",background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"10px",fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Close</button>
+      </div></div>}
     </div>
   );
 }
 
 // ── PORTAL VIEW ───────────────────────────────────────────────────────────────
 
-function PortalView({onAdmin}) {
+function PortalView({profile,onAdmin,onSignOut,onChangePassword}) {
   const [activePage,setActivePage] = useState(PAGES[0]);
   const [sidebarOpen,setSidebarOpen] = useState(true);
-  const [readPages,setReadPages] = useState(["home","mission","client-journey","practitioner-readiness"]);
-  const markRead = (id) => {if(!readPages.includes(id))setReadPages([...readPages,id]);};
+  const [readPages,setReadPages] = useState([]);
+  const trainingIds = PAGES.filter(p=>p.status==="complete").map(p=>p.id);
+  const readCount = readPages.filter(id=>trainingIds.includes(id)).length;
+  const saveRead = (id) => supabase.from("page_progress").upsert({user_id:profile.id,page_id:id},{onConflict:"user_id,page_id",ignoreDuplicates:true}).then(()=>{});
+  const markRead = (id) => {if(readPages.includes(id))return;setReadPages(prev=>prev.includes(id)?prev:[...prev,id]);saveRead(id);};
+  useEffect(()=>{
+    supabase.from("page_progress").select("page_id").eq("user_id",profile.id).then(({data})=>{
+      const ids=(data||[]).map(r=>r.page_id);
+      setReadPages(ids.includes(PAGES[0].id)?ids:[...ids,PAGES[0].id]);
+      if(!ids.includes(PAGES[0].id)) saveRead(PAGES[0].id);
+    });
+  },[profile.id]);
   const canAccess = (page) => page.status==="complete"||page.status==="next";
 
   return (
@@ -846,8 +883,8 @@ function PortalView({onAdmin}) {
           <div style={{fontSize:"10px",color:C.muted,marginTop:"4px",fontStyle:"italic"}}>Move Better. Live Stronger.</div>
         </div>
         <div style={{padding:"14px 20px",borderBottom:`1px solid ${C.border}`,flexShrink:0}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:"6px"}}><span style={{fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",color:C.muted}}>Your Progress</span><span style={{fontSize:"10px",color:C.accent}}>{readPages.length}/{PAGES.length}</span></div>
-          <div style={{height:"2px",background:C.border,borderRadius:"1px"}}><div style={{height:"100%",width:`${Math.round(readPages.length/PAGES.length*100)}%`,background:C.accent,transition:"width 0.4s"}}/></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:"6px"}}><span style={{fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",color:C.muted}}>Your Progress</span><span style={{fontSize:"10px",color:C.accent}}>{readCount}/{trainingIds.length}</span></div>
+          <div style={{height:"2px",background:C.border,borderRadius:"1px"}}><div style={{height:"100%",width:`${trainingIds.length?Math.round(readCount/trainingIds.length*100):0}%`,background:C.accent,transition:"width 0.4s"}}/></div>
         </div>
         <nav style={{flex:1,overflowY:"auto",padding:"8px 0"}}>
           {PAGES.map(page=>{
@@ -858,7 +895,13 @@ function PortalView({onAdmin}) {
           })}
         </nav>
         <div style={{padding:"16px 20px",borderTop:`1px solid ${C.border}`,flexShrink:0}}>
-          <button onClick={onAdmin} style={{width:"100%",background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px",fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Admin Dashboard →</button>
+          <div style={{fontSize:"12px",color:C.text,fontWeight:"bold",marginBottom:"2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{profile.full_name}</div>
+          <div style={{fontSize:"10px",color:C.muted,marginBottom:"12px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{profile.email}</div>
+          {profile.role==="admin"&&<button onClick={onAdmin} style={{width:"100%",background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px",fontSize:"9px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px",marginBottom:"8px"}}>Admin Dashboard →</button>}
+          <div style={{display:"flex",gap:"8px"}}>
+            <button onClick={onChangePassword} style={{flex:1,background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px 4px",fontSize:"9px",letterSpacing:"1px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Password</button>
+            <button onClick={onSignOut} style={{flex:1,background:"none",border:`1px solid ${C.border}`,color:C.muted,padding:"8px 4px",fontSize:"9px",letterSpacing:"1px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",borderRadius:"3px"}}>Sign Out</button>
+          </div>
         </div>
       </div>
 
@@ -894,14 +937,120 @@ function PortalView({onAdmin}) {
   );
 }
 
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+
+const inputStyle = {width:"100%",background:C.bg,border:`1px solid ${C.border}`,color:C.text,padding:"12px 14px",fontSize:"14px",fontFamily:"Georgia,serif",borderRadius:"3px",outline:"none"};
+const primaryBtn = {width:"100%",background:C.accent,color:"#fff",border:"none",padding:"13px",fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",cursor:"pointer",fontFamily:"Georgia,serif",fontWeight:"bold",borderRadius:"3px"};
+
+function AuthShell({children}) {
+  return (
+    <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:C.bg,padding:"24px 16px"}}>
+      <div style={{width:"100%",maxWidth:"380px",background:C.surface,border:`1px solid ${C.border}`,borderRadius:"6px",padding:"36px 28px"}}>
+        <div style={{marginBottom:"28px"}}>
+          <div style={{fontSize:"15px",letterSpacing:"3px",textTransform:"uppercase",color:C.text,fontWeight:"bold",fontFamily:"Georgia,serif"}}>IRON CITY</div>
+          <div style={{fontSize:"12px",letterSpacing:"3px",textTransform:"uppercase",color:C.accent,fontFamily:"Georgia,serif"}}>BIOMECHANICS</div>
+          <div style={{fontSize:"11px",color:C.muted,marginTop:"6px",fontStyle:"italic"}}>Staff Training Portal</div>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function LoginView() {
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [error,setError] = useState("");
+  const [busy,setBusy] = useState(false);
+  const submit = async (e) => {
+    e.preventDefault();
+    setError(""); setBusy(true);
+    const {error} = await supabase.auth.signInWithPassword({email:email.trim(),password});
+    setBusy(false);
+    if(error) setError("That email and password don't match. Check both and try again.");
+  };
+  return (
+    <AuthShell>
+      <form onSubmit={submit} style={{display:"flex",flexDirection:"column",gap:"14px"}}>
+        <label style={{fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",color:C.muted}}>Email
+          <input id="login-email" type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} style={{...inputStyle,marginTop:"6px",textTransform:"none",letterSpacing:"normal"}}/>
+        </label>
+        <label style={{fontSize:"10px",letterSpacing:"2px",textTransform:"uppercase",color:C.muted}}>Password
+          <input id="login-password" type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} style={{...inputStyle,marginTop:"6px",textTransform:"none",letterSpacing:"normal"}}/>
+        </label>
+        {error&&<div style={{fontSize:"13px",color:C.danger,lineHeight:1.5}}>{error}</div>}
+        <button type="submit" disabled={busy} style={{...primaryBtn,opacity:busy?0.6:1,marginTop:"6px"}}>{busy?"Signing in…":"Sign In"}</button>
+        <div style={{fontSize:"12px",color:C.muted,lineHeight:1.6,marginTop:"4px"}}>Forgot your password or need an account? Ask Neriah.</div>
+      </form>
+    </AuthShell>
+  );
+}
+
+function NameView({userId,onSaved}) {
+  const [name,setName] = useState("");
+  const [error,setError] = useState("");
+  const save = async (e) => {
+    e.preventDefault();
+    if(!name.trim()) return;
+    const {error} = await supabase.from("profiles").update({full_name:name.trim()}).eq("id",userId);
+    if(error){setError("Couldn't save your name. Try again.");return;}
+    onSaved(name.trim());
+  };
+  return (
+    <AuthShell>
+      <form onSubmit={save} style={{display:"flex",flexDirection:"column",gap:"14px"}}>
+        <div style={{fontSize:"18px",fontWeight:"bold",color:C.text}}>Welcome to ICB</div>
+        <div style={{fontSize:"14px",color:C.muted,lineHeight:1.6}}>Enter your full name. This is how you'll appear on your training record.</div>
+        <input id="full-name" required value={name} onChange={e=>setName(e.target.value)} placeholder="Full name" style={inputStyle}/>
+        {error&&<div style={{fontSize:"13px",color:C.danger}}>{error}</div>}
+        <button type="submit" style={primaryBtn}>Continue</button>
+      </form>
+    </AuthShell>
+  );
+}
+
 // ── ROOT ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [view,setView] = useState("portal");
+  const [session,setSession] = useState(null);
+  const [profile,setProfile] = useState(null);
+  const [ready,setReady] = useState(false);
+
+  useEffect(()=>{
+    if(!supabase){setReady(true);return;}
+    supabase.auth.getSession().then(({data})=>{setSession(data.session);setReady(true);});
+    const {data:{subscription}} = supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(!s){setProfile(null);setView("portal");}});
+    return ()=>subscription.unsubscribe();
+  },[]);
+
+  useEffect(()=>{
+    if(!session) return;
+    supabase.from("profiles").select("id,email,full_name,role").eq("id",session.user.id).single()
+      .then(({data})=>setProfile(data||{id:session.user.id,email:session.user.email,full_name:null,role:"staff"}));
+  },[session]);
+
+  const signOut = ()=>supabase.auth.signOut();
+  const changePassword = async ()=>{
+    const pw = window.prompt("Enter a new password (at least 8 characters):");
+    if(!pw) return;
+    if(pw.length<8){window.alert("Your password needs at least 8 characters.");return;}
+    const {error} = await supabase.auth.updateUser({password:pw});
+    window.alert(error?"Your password wasn't changed. Try again.":"Password changed.");
+  };
+
+  let body;
+  if(!supabase) body = <AuthShell><div style={{fontSize:"14px",color:C.danger,lineHeight:1.6}}>Portal sign-in isn't set up yet. Add VITE_SUPABASE_URL and VITE_SUPABASE_KEY in Vercel, then redeploy.</div></AuthShell>;
+  else if(!ready || (session && !profile)) body = <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",color:C.muted,fontFamily:"Georgia,serif"}}>Loading…</div>;
+  else if(!session) body = <LoginView/>;
+  else if(!profile.full_name) body = <NameView userId={profile.id} onSaved={(n)=>setProfile({...profile,full_name:n})}/>;
+  else if(view==="admin" && profile.role==="admin") body = <AdminView onBack={()=>setView("portal")}/>;
+  else body = <PortalView profile={profile} onAdmin={()=>setView("admin")} onSignOut={signOut} onChangePassword={changePassword}/>;
+
   return (
     <>
       <style>{GLOBAL_STYLE}</style>
-      {view==="portal"?<PortalView onAdmin={()=>setView("admin")}/>:<AdminView onBack={()=>setView("portal")}/>}
+      {body}
     </>
   );
 }
